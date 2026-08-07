@@ -78,7 +78,7 @@ namespace Pathfinding.BehaviourTrees  //namespace for organsing group related fu
 
         public override void Reset()
         {
-            base.Reset();
+            base.Reset();  // this a problem ?
             sortedChildren = null;
         }
 
@@ -86,16 +86,29 @@ namespace Pathfinding.BehaviourTrees  //namespace for organsing group related fu
         {
             foreach (var child in SortedChildren)
             {
-                switch (child.Process())
+              /*  switch (child.Process())
                 {
                     case Status.Running:
                         return Status.Running;
                     case Status.Success:
-                        return Status.Success;
+                    //    Reset();   // get rid ?
+                        return Status.Success; // was success
                     default:
                         continue; // if make it out of this loop then its failed ?
                 }
-            }
+            }*/
+              var status = child.Process();
+
+                if (status == Status.Success)
+                {
+                    return Status.Success;
+                }
+
+                if (status == Status.Running)
+                {
+                    return Status.Running;
+                }
+            } 
             return Status.Failure;
         }
     }
@@ -138,14 +151,24 @@ namespace Pathfinding.BehaviourTrees  //namespace for organsing group related fu
                     case Status.Running:
                         return Status.Running;
                     case Status.Failure:
-                        Reset();  // reset whole node is one child/part of sequence fails 
+                        Reset();  // reset whole node if one child/part of sequence fails 
                         return Status.Failure;
-                    default:
-                        currentChild++;  // next child until changes from running to success 
-                        return currentChild == children.Count ? Status.Success : Status.Running;
+                    /*  default:
+                          currentChild++;  // next child until changes from running to success 
+                          return currentChild == children.Count ? Status.Success : Status.Running; */
+                    case Status.Success:
+                        currentChild++;
+
+                        if (currentChild == children.Count)
+                        {
+                            Reset();
+                            return Status.Success;
+                        }
+
+                        return Status.Running;
                 }
             }
-            Reset();
+            Reset(); // should i put this below success ?
             return Status.Success;  // if did not make it inside if condition
         }
     }
@@ -207,16 +230,21 @@ namespace Pathfinding.BehaviourTrees  //namespace for organsing group related fu
 
         public override Status Process()  //override process method
         {
-            while (currentChild < children.Count)  // interate through all the children and run their process method
-            {
-                var status = children[currentChild].Process();
-                if (status != Status.Success)  //[1a]
-                {
-                    return status;
-                }
-                currentChild++;  //if running current child process was success [1a] , keep iterating 
-            }
-            return Status.Success;  //if all children are have processed, return success 
+            /* while (currentChild < children.Count)  // interate through all the children and run their process method
+             {
+                 var status = children[currentChild].Process();
+                 if (status != Status.Success)  //[1a]
+                 {
+                     return status;
+                 }
+                 currentChild++;  //if running current child process was success [1a] , keep iterating 
+             }
+             return Status.Success;  //if all children are have processed, return success */
+
+            if (children.Count == 0)
+                return Status.Failure;
+
+            return children[0].Process();
         }
     }
 }

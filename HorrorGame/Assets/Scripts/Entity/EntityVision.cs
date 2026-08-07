@@ -13,11 +13,12 @@ public class EntityVision : MonoBehaviour
     [SerializeField] public Transform player; // {  get; set; }
 
     [Header("Settings")]
-    [SerializeField] private float detectionRange = 5f;
+    [SerializeField] private float detectionRange = 10f;
     [SerializeField] private float viewAngle = 90f;
     [SerializeField] private float losePlayerTime = 3f;
 
     private float _timeSinceLostPlayer;
+   // public bool hasSeenPlayer = false;
 
     private void Awake()
     {
@@ -32,15 +33,18 @@ public class EntityVision : MonoBehaviour
 
     void Update()
     {
-      //  var distanceToPlayer = Vector3.Distance(player.position, transform.position);
-
+        //  var distanceToPlayer = Vector3.Distance(player.position, transform.position);
+        hasSeenPlayer();
         if (IsPlayerVisible())
         {
+            Debug.Log("PLAYER VISIBLE");
             _timeSinceLostPlayer = 0f;
         }
         else
         {
             _timeSinceLostPlayer += Time.deltaTime;
+            HasLostPlayer();
+          //  Debug.Log("PLAYER NO LONGER VISIBLE, time since lost: " + _timeSinceLostPlayer);
         }
     }
 
@@ -72,10 +76,19 @@ public class EntityVision : MonoBehaviour
 
     public bool HasLostPlayer()
     {
-        /*  if (IsPlayerVisible()) return false;
+          if (IsPlayerVisible()) return false;
           Debug.Log("Has Lost Player");
-          return true; */
-        return _timeSinceLostPlayer >= losePlayerTime;
+          return true; 
+       // return _timeSinceLostPlayer >= losePlayerTime;
+    }
+
+    public bool hasSeenPlayer()
+    {
+        if (IsPlayerVisible())
+        {
+            Debug.Log("HAS SEEN PLAYER");
+            return true;
+        } return false;
     }
 
     private bool IsWithinRange()

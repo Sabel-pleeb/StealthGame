@@ -5,6 +5,11 @@ using UnityEngine;
 using UnityEngine.AI;
 using UnityEngine.Rendering;
 
+/*CanSeePlayer
+PlayerInChaseRange
+HasLostPlayer
+MoveToLastKnownPosition
+ReturnToClosestPatrolPoint */
 // should i add a chase/lose Player and moveToGenerator strat
 namespace Pathfinding.BehaviourTrees  // file for executing strategies in game
 {
@@ -80,7 +85,10 @@ namespace Pathfinding.BehaviourTrees  // file for executing strategies in game
         public Nodes.Status Process()
         {
             if (patrolPoints.Count == 0)
+            {
+                Debug.Log("Patrol point count is 0 so fail");
                 return Nodes.Status.Failure;
+            }
 
             if (targetPoint == null)
             {
@@ -99,22 +107,29 @@ namespace Pathfinding.BehaviourTrees  // file for executing strategies in game
                     }
                 }
 
+                Debug.Log("idl man");
+
+                if (targetPoint == null)
+                    return Nodes.Status.Failure;
+
+                agent.isStopped = false;
                 agent.SetDestination(targetPoint.position);
             }
 
-            if (!agent.pathPending &&
-                agent.remainingDistance <= 0.2f)
+            if (!agent.pathPending && agent.remainingDistance <= 0.2f)
             {
+                Debug.Log("RETURN SUCCESS");
                 return Nodes.Status.Success;
             }
-
+            Debug.Log("Returning process");
             return Nodes.Status.Running;
         }
 
         public void Reset()
         {
-            targetPoint = null;
-            agent.ResetPath();
+            Debug.Log("RESETTING RETURN");
+           targetPoint = null;
+         //   agent.ResetPath();
         }
     }
 
@@ -124,32 +139,50 @@ namespace Pathfinding.BehaviourTrees  // file for executing strategies in game
         readonly NavMeshAgent agent;
         readonly Transform player;
         readonly float stoppingDistance;
+        readonly float chaseSpeed;
+        readonly Func<bool> canSeePlayer;
 
-        public ChasePlayerStrategy(Transform entity, NavMeshAgent agent,Transform player, float stoppingDistance = 1.5f)
+        public ChasePlayerStrategy(Transform entity, NavMeshAgent agent, Transform player, Func<bool> canSeePlayer, float stoppingDistance = 1.5f, float chaseSpeed = 7)
         {
             this.entity = entity;
             this.agent = agent;
             this.player = player;
             this.stoppingDistance = stoppingDistance;
+            this.chaseSpeed = chaseSpeed;
+            this.canSeePlayer = canSeePlayer;
         }
+
 
         public Nodes.Status Process()
         {
+            if (!canSeePlayer())
+            {
+              //  agent.ResetPath();
+                return Nodes.Status.Failure;
+            }
+
             agent.SetDestination(player.position);
 
             if (!agent.pathPending &&
-                agent.remainingDistance <= stoppingDistance)
+                agent.remainingDistance <= 0.2f)
             {
+                Debug.Log("CAUGHT");
                 return Nodes.Status.Success;
             }
-
+            Debug.Log("chasingggg");
             return Nodes.Status.Running;
         }
 
         public void Reset()
         {
-            agent.ResetPath();
+            //  if (isChasing)
+            // {
+          //  agent.ResetPath();
+            Debug.Log("NO LONGER CHASING");
+           // }
         }
+
+
     }
 
     public class ActionStrategy : IStrategy  //simple fire and forget 
@@ -174,6 +207,7 @@ namespace Pathfinding.BehaviourTrees  // file for executing strategies in game
 
         public Condition(Func<bool> predicate)  //evaluate if Func is true or false - whether met condition or not
         {
+            Debug.Log("CONDITION ACCESSED");
             this.predicate = predicate;
         }
 
@@ -201,18 +235,21 @@ namespace Pathfinding.BehaviourTrees  // file for executing strategies in game
         {
             if (patrolPoints.Count == 0) return Nodes.Status.Failure;
 
-           // entity.LookAt(target.position.With(y:entity.position.y));  //looking at destination
+            Transform target = patrolPoints[currentIndex];
 
-            if(!isPathCalculated)
+            // entity.LookAt(target.position.With(y:entity.position.y));  //looking at destination
+
+            if (!isPathCalculated)
             {
+                Debug.Log($"Setting destination {patrolPoints[currentIndex].position}");
+                agent.isStopped = false;
                 agent.SetDestination(patrolPoints[currentIndex].position);
+
                 isPathCalculated = true;
             }
 
-           // if(isPathCalculated && agent.remainingDistance < 0.2f)  // distance check to next point, if close enough go to next patrol point index
-            if (!agent.pathPending && agent.remainingDistance <= 0.2f)
+             if(!agent.pathPending && agent.remainingDistance < 0.2f)  // distance check to next point, if close enough go to next patrol point index
             {
-               // currentIndex++;  // is this a sequence ? iterating to next patrol point 
                 currentIndex = (currentIndex + 1) % patrolPoints.Count;
                 isPathCalculated = false;  //reset path bool
 
@@ -222,7 +259,13 @@ namespace Pathfinding.BehaviourTrees  // file for executing strategies in game
             return Nodes.Status.Running;  //agent is still moving so process is running
         }
 
-        public void Reset() => currentIndex = 0;  // set index of waypoints back to 0 if process isnt running ? (original waypoint)
+        public void Reset()
+        {
+            Debug.Log("Patrol Reset");
+          //  currentIndex = 0;
+            isPathCalculated = false;
+            agent.ResetPath();
+        }
     }
 
     public class MoveToTarget : IStrategy
@@ -230,7 +273,7 @@ namespace Pathfinding.BehaviourTrees  // file for executing strategies in game
         readonly Transform entity;
         readonly NavMeshAgent agent;
         readonly Transform target;
-        bool isPathCalculated;
+       // bool isPathCalculated;
 
         public MoveToTarget(Transform entity, NavMeshAgent agent, Transform target)
         {
@@ -249,13 +292,18 @@ namespace Pathfinding.BehaviourTrees  // file for executing strategies in game
             agent.SetDestination(target.position);
            // entity.LookAt(target.position.With(y: entity.position.y));
 
-            if (agent.pathPending)
+         /*   if (agent.pathPending)
             {
                 isPathCalculated = true;
-            }
+            } */
             return Nodes.Status.Running;
         }
+        public void Reset()
+        {
+            agent.ResetPath();
+        }
 
-        public void Reset() => isPathCalculated = false;
+        // public void Reset() => isPathCalculated = false;
+
     }
 }
