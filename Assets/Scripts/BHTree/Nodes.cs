@@ -78,7 +78,7 @@ namespace Pathfinding.BehaviourTrees  //namespace for organsing group related fu
 
         public override void Reset()
         {
-            base.Reset();  // this a problem ?
+            base.Reset();  
             sortedChildren = null;
         }
 
@@ -86,17 +86,7 @@ namespace Pathfinding.BehaviourTrees  //namespace for organsing group related fu
         {
             foreach (var child in SortedChildren)
             {
-              /*  switch (child.Process())
-                {
-                    case Status.Running:
-                        return Status.Running;
-                    case Status.Success:
-                    //    Reset();   // get rid ?
-                        return Status.Success; // was success
-                    default:
-                        continue; // if make it out of this loop then its failed ?
-                }
-            }*/
+
               var status = child.Process();
 
                 if (status == Status.Success)
@@ -168,7 +158,7 @@ namespace Pathfinding.BehaviourTrees  //namespace for organsing group related fu
                         return Status.Running;
                 }
             }
-            Reset(); // should i put this below success ?
+            Reset(); 
             return Status.Success;  // if did not make it inside if condition
         }
     }

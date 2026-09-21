@@ -29,7 +29,6 @@ public class TestInteraction : MonoBehaviour, IInteractable  // eg door
     }
     public bool CanInteract()
     {
-      //  Debug.Log("NEAR INTERACTABLE OBJECT");
         return true; //eg something that can always be interacted with 
     }
 
@@ -37,7 +36,7 @@ public class TestInteraction : MonoBehaviour, IInteractable  // eg door
     {
         DoorToggle(interactor.transform);
 
-        return true; // if interaction finished ?
+        return true; 
     }
 
     public void FocusGained()
@@ -62,28 +61,21 @@ public class TestInteraction : MonoBehaviour, IInteractable  // eg door
 
         }
         AudioManager.Instance.Play("DoorCreak", audioSource);
-       // _isOpen = !_isOpen;
     }
 
     public void open(Transform opener)
     {
         if (_isOpen) return;
-       // AudioManager.Instance.PlayAtPosition("DoorCreak", transform.position);
-
         _isOpen = true;
-        // transform.DORotate(-_targetRotation, _rotationSpeed, RotateMode.WorldAxisAdd);
 
-        // Get the player's position relative to the door
         Vector3 directionToPlayer = opener.transform.position - transform.position; 
-        // Determine which side of the door the player is on
+
         float side = Vector3.Dot(transform.forward, directionToPlayer);
         float rotationDirection; if (side > 0f) { 
-            // Player is in front of the door
             rotationDirection = 1f;
         }
         else 
         {
-            // Player is behind the door
             rotationDirection = -1f; 
         }
         Vector3 openRotation = _closedRotation.eulerAngles + (_targetRotation * rotationDirection); 

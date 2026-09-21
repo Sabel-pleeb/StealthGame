@@ -33,7 +33,7 @@ public class EntityDetection : MonoBehaviour
         player = GameObject.FindGameObjectWithTag("Player");
         _playerController = player.GetComponent<PlayerController>();
         navMeshAgent = GetComponent<NavMeshAgent>();
-        playerTransform = player.transform; // need to assign this in insepctor ? 
+        playerTransform = player.transform; 
         vision = GetComponent<EntityVision>();
         lightDetection = GetComponent<ELightDetection>();
         playerTransform = player.transform;
@@ -49,17 +49,11 @@ public class EntityDetection : MonoBehaviour
 
     public void playerCaught() //-------------------------------------DETECTION handles what to do if player caught
     {
-        if (isCaught()) // do something here usuing a raycast to make the ai move to somewhere where the jumpscare cam is not near a wall ? or change location of entity 
+        if (isCaught()) 
         {
-            //  gameObject.transform.position = jumpscarePosition.transform.position;
-
-            //   collider.gameObject.SetActive(true);
-         //   Debug.Log("PlayerCaughtMethod");
             _playerController.isCaught = true;
-            _playerController.Jumpscare(jumpscareCam);
-          //  navMeshAgent.isStopped = true;  
+            _playerController.Jumpscare(jumpscareCam); 
             uiManager.WidgetsOff();
-           // animStates.SetState(EntityStates.jumpscare);
         }
     }
 
@@ -89,8 +83,7 @@ public class EntityDetection : MonoBehaviour
             return false;
         }
         return vision.GetPlayerVisionCones().Count > 0;
-        // List<VisionConeType> detectedCones = GetPlayerVisionCones();
-        // return detectedCones.Contains(VisionConeType.Normal);
+
     }
 
 
@@ -133,7 +126,6 @@ public class EntityDetection : MonoBehaviour
         while (true)
         {
             yield return wait;
-          //  List<VisionConeType> cones = vision.GetPlayerVisionCones();
 
             if (IsPlayerinCones())
             {
@@ -158,28 +150,20 @@ public class EntityDetection : MonoBehaviour
                     if (!detectionSoundPlaying && !isCaught())
                         {
                             detectionSoundPlaying = true;
-                           // AudioManager.Instance.PlayAtPosition("DetectionSound", transform.position);
                         }
                         uiManager.VisibleUI(VisionConeType.Wide); 
                     }
                     if (cones.Contains(VisionConeType.Close))
                     {
-                    //    Debug.Log("Blindspot vision");
                         uiManager.VisibleUI(VisionConeType.Close); 
 
                     }
 
                 LastKnownPlayerPosition = playerTransform.position;
-            //    Debug.Log("PLAYER VISIBLE");
-            //    uiManager.VisibleUI(VisionConeType.None); 
-
-                //  _timeSinceLostPlayer = 0f;
 
                 if (isCaught())
                 {
-                     //   Debug.Log("PLAYER IS CAUGHT MWAHAHA");
-                   // uiManager.teleport();
-
+                  //   Debug.Log("PLAYER IS CAUGHT MWAHAHA");
                 }
             }
             else if (vision.IsLightInsideCone())
@@ -193,8 +177,7 @@ public class EntityDetection : MonoBehaviour
             }
 
             lightDetection.CheckLightDetection(delay);
-         //   vision.CheckForHidingPlaces();
-           // uiManager.VisibleUI(VisionConeType.HidingPlaces); 
+
 
         }
     }

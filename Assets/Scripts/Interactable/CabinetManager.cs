@@ -79,7 +79,6 @@ public class CabinetManager : MonoBehaviour
 
             if (_playerHiding != null)
             {
-            //  AudioManager.Instance.PlayAtPosition("DoorCreak", transform.position);
             AudioManager.Instance.Play("CabinetDoor", audioSource);
             _playerHiding.SetCabinet(this);
                 _playerHiding.Hide();
@@ -145,10 +144,7 @@ public class CabinetManager : MonoBehaviour
                 RotateMode.WorldAxisAdd
             );
         }
-
         _isOpen = true;
-
-          //  AudioManager.Instance.PlayAtPosition("DoorCreak", transform.position);
     }
 
     public void DoorTransparency(bool inCabinet)

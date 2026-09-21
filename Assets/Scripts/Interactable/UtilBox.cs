@@ -9,7 +9,6 @@ public class UtilBox : MonoBehaviour, IInteractable
     private Quaternion _closedRotation;
     public bool _isOpen;
     private Outline outline;
-    // [SerializeField] private GameObject _gameObject;
 
 
     private void Awake()
@@ -25,14 +24,14 @@ public class UtilBox : MonoBehaviour, IInteractable
     public bool CanInteract()
     {
        // Debug.Log("NEAR INTERACTABLE OBJECT");
-        return true; //eg something that can always be interacted with 
+        return true; 
     }
 
     public bool Interact(Interactor interactor)   //result of interaction or checks 
     {
         DoorToggle();
 
-        return true; // if interaction finished ?
+        return true; 
     }
 
     public void FocusGained()
@@ -56,8 +55,6 @@ public class UtilBox : MonoBehaviour, IInteractable
             open();
 
         }
-
-        // _isOpen = !_isOpen;
     }
 
     public void open()

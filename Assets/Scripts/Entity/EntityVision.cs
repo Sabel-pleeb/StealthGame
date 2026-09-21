@@ -18,7 +18,6 @@ public class EntityVision : MonoBehaviour
 
     [Header("PlayerRefs")]
     public GameObject player; // {  get; set; }
-  //  public Transform playerTransform; // {  get; set; }
     public PlayerController _playerController;
 
     public EntityDetection entityDetection;
@@ -84,11 +83,8 @@ public class EntityVision : MonoBehaviour
                 continue;
             if (entityInteract.IsHidingPlaceInsideCone(cone))
             {
-             //   entityInteract.CheckForHiding();
-              //  Debug.Log($"Hiding place detected in {cone.type} cone");  // this works
                 return true;
             }
-           // return false;
         }
         return false;
     }
@@ -107,11 +103,11 @@ public class EntityVision : MonoBehaviour
         {
             if (cone.type != VisionConeType.Wide) // || 
                 continue;
+
             // Range check
             if (distanceToLight > cone.detectionRange)
                 continue;
 
-            // Convert cone's local direction into world space
             Vector3 coneDirection =
                 transform.TransformDirection(cone.localDirection).normalized;
 
@@ -144,10 +140,9 @@ public class EntityVision : MonoBehaviour
             Vector3 origin = transform.position;
             float halfAngle = cone.viewAngle / 2f;
 
-            // Centre line
+           
             Gizmos.DrawRay(origin, transform.forward * cone.detectionRange);
-
-            // Left and right edges
+      
             Vector3 leftDirection =
                 Quaternion.Euler(0f, -halfAngle, 0f) * transform.forward;
 
@@ -157,7 +152,6 @@ public class EntityVision : MonoBehaviour
             Gizmos.DrawRay(origin, leftDirection * cone.detectionRange);
             Gizmos.DrawRay(origin, rightDirection * cone.detectionRange);
 
-            // Draw the arc
             int segments = 30;
 
             Vector3 previousPoint =

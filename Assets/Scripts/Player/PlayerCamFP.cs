@@ -11,12 +11,9 @@ public class PlayerCamFP : MonoBehaviour
 
     public Transform orientation;
 
-    private float xRotation; // make private ? 
+    private float xRotation; 
     private float yRotation;
 
-    private bool _isTurning;
-
-    private CinemachineCamera FPCam;
 
     void Start()
     {
@@ -26,8 +23,6 @@ public class PlayerCamFP : MonoBehaviour
 
     void Update()
     {
-      //  FPCam.transform.TransformDirection
-        //mouse input 
         float mouseX = Input.GetAxisRaw("Mouse X") * Time.deltaTime * senseX;
         float mouseY = Input.GetAxisRaw("Mouse Y") * Time.deltaTime * senseY;
 
@@ -50,62 +45,12 @@ public class PlayerCamFP : MonoBehaviour
 
     public void TurnAround()
     {
-      //  yRotation += 180f;
         StartCoroutine(CameraTurn((yRotation += 180), 3f));
     }
 
-    /*  IEnumerator CameraTurn(float targetYRotation, float duration)
-      {
-          _isTurning = true;
-          float startYRotation = yRotation;
-          float elapsed = 0;
-
-          while (elapsed < duration)
-          {
-              elapsed += Time.deltaTime;
-
-              float t = elapsed / duration;
-
-              yRotation = Mathf.Lerp(
-                  startYRotation,
-                  targetYRotation,
-                  t
-              );
-
-              transform.rotation = Quaternion.Euler(
-                  xRotation,
-                  yRotation,
-                  0f
-              );
-
-              orientation.rotation = Quaternion.Euler(
-                  0f,
-                  yRotation,
-                  0f
-              );
-
-              yield return null;
-          }
-
-          yRotation = targetYRotation;
-
-          transform.rotation = Quaternion.Euler(
-              xRotation,
-              yRotation,
-              0f
-          );
-
-          orientation.rotation = Quaternion.Euler(
-             0f,
-             yRotation,
-             0f
-         );
-
-      } */
-
     private IEnumerator CameraTurn(float targetYRotation, float duration)
     {
-        _isTurning = true;
+      //  _isTurning = true;
 
         float startYRotation = yRotation;
         float elapsed = 0f;
@@ -131,6 +76,6 @@ public class PlayerCamFP : MonoBehaviour
         transform.rotation = Quaternion.Euler(xRotation, yRotation, 0f);
         orientation.rotation = Quaternion.Euler(0f, yRotation, 0f);
 
-        _isTurning = false;
+      //  _isTurning = false;
     }
 }

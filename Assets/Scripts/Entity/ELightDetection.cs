@@ -16,7 +16,6 @@ public class ELightDetection : MonoBehaviour
 
     public EntityVision vision;
 
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Awake()
     {
         LightLimit = false;
@@ -66,24 +65,17 @@ public class ELightDetection : MonoBehaviour
 
             _lightVisibleTimer += delay;
 
-          //  AudioManager.Instance.PlayAtPosition("DetectionSound", transform.position);
-
             // Keep track of where the light currently is
             LastKnownLightPosition = light.transform;
 
             if (_lightVisibleTimer >= lightDetectionTime)
             {
-             //   Debug.Log("LIGHT DETECTED FOR 3 SECONDS");
-
-                // This is where  AI can start travelling
-                // to LastKnownLightPosition.
                 LightLimit = true;
                 _lightVisibleTimer = 0f;
             }
         }
         else
         {
-           // LightLimit = false;
             _lightDetected = false;
             _lightVisibleTimer = 0f;
         }

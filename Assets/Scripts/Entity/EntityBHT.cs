@@ -23,16 +23,15 @@ public class EntityBHT : MonoBehaviour
         };
 
         //--------------------------------------------------------------------------------------------------------------------
-        tree = new BehaviourTree("Entity");  // instantiate a new behaviour tree named after this class ?
+        tree = new BehaviourTree("Entity");  // instantiate a new behaviour tree named after this class 
         PrioritySelector agentLogic = new PrioritySelector("AgentLogic");
 
 
         //---------------------------------------------------------------------------------------------------------------------
         Sequence Chasing = new Sequence("Chasing", 80);
 
-        Chasing.AddChild(new Leaf("Player Visible", new Condition(() => context.Vision.GetPlayerVisionCones().Contains(EntityVision.VisionConeType.Normal))));  //CHANGE CONDITION BACK
-        Chasing.AddChild( new Leaf("Chase Player", new ChasePlayerStrategy(transform, context.Movement.agent, context.Detection.playerTransform, context.Anims, context.Detection.IsPlayerinCones, context.Detection.isCaught, EntityStates.running, EntityStates.jumpscare, default , 5)));  // this isnt working 
-      //  Chasing.AddChild(new Leaf("Player Caught", new Condition(context.Detection.isCaught)));  
+        Chasing.AddChild(new Leaf("Player Visible", new Condition(() => context.Vision.GetPlayerVisionCones().Contains(EntityVision.VisionConeType.Normal))));  
+        Chasing.AddChild( new Leaf("Chase Player", new ChasePlayerStrategy(transform, context.Movement.agent, context.Detection.playerTransform, context.Anims, context.Detection.IsPlayerinCones, context.Detection.isCaught, EntityStates.running, EntityStates.jumpscare, default , 5)));  
         agentLogic.AddChild(Chasing);
 
         //-----------------------------------------------------------------------------------------------------------------------
@@ -54,7 +53,7 @@ public class EntityBHT : MonoBehaviour
         //---------------------------------------------------------------------------------------------------------------------------
         Sequence CheckHiding = new Sequence("Hide and Seek", 35);
 
-          CheckHiding.AddChild(new Leaf("Hiding Nearby", new Condition(() => context.Vision.CheckForHidingPlaces() && context.playerHiding.hideCount >= 2))); //&& chcek hiding count intCheckHiding.AddChild(
+          CheckHiding.AddChild(new Leaf("Hiding Nearby", new Condition(() => context.Vision.CheckForHidingPlaces() && context.playerHiding.hideCount >= 2))); 
         CheckHiding.AddChild(new Leaf("Move to Hiding", new MoveToTarget(transform, context.Movement.agent, () => context.Interact.ClosestCabinet)));
         CheckHiding.AddChild(new Leaf("Check Hiding", new HideAndSeekStrategy(transform, context.Movement.agent, () => context.Interact.ClosestCabinet, context.uiManager, () => context.Vision.CheckForHidingPlaces(), context.Detection.IsPlayerinCones, context.Anims, context.Interact, context.Detection, context.playerHiding,  EntityStates.walking, EntityStates.jumpscare, context.Detection.isCaught)));
         agentLogic.AddChild(CheckHiding);
@@ -73,8 +72,6 @@ public class EntityBHT : MonoBehaviour
 
     void Update()
     {
-        //  AnimationState.SetSpeed(agent.velocity.magnitude);
         tree.Process();
-       // context.Movement.agent.SetDestination(context.Vision.player.position);
     }
 }

@@ -13,24 +13,15 @@ public class MoveCam : MonoBehaviour
     private void Start()
     {
         FPCam.gameObject.SetActive(true);
-        TopDownCam.gameObject.SetActive(false);
+        TopDownCam.gameObject.SetActive(false); // for chescking scene, wont be in full game 
     }
     void Update()
     {
-      /*  if (Input.GetKeyDown(KeyCode.C))
-        {
-            FPCam.gameObject.SetActive(!FPCam.gameObject.activeSelf);
-            TopDownCam.gameObject.SetActive(!TopDownCam.gameObject.activeSelf);
-           // Debug.Log(Camera.current + " is active ");
-        } */
 
         if (FPCam.isActiveAndEnabled)  
         {
             FPCam.transform.position = cameraPosition.position; // TopDownCam changes position with this, need it to be just one position
         } 
-     /*   if (TopDownCam.isActiveAndEnabled)  
-        {
-            FPCam.transform.position = cameraPosition.position; // TopDownCam changes position with this, need it to be just one position
-        } */
+
     }
 }

@@ -47,16 +47,12 @@ public class EntityInteract : MonoBehaviour
             doorMask))  //, QueryTriggerInteraction.Ignore))
         {
             TestInteraction door = hit.collider.GetComponentInParent<TestInteraction>();  // was in parent
-       //     Debug.Log("checking for doors");
 
             if (door != null)
             {
-           //     Debug.Log("DOOR FOUND: " + door.name);
 
                 if (!door._isOpen)
                 {
-              //      Debug.Log("ENTITY OPENING DOOR");
-
                     currentDoor = door;
                     door.open(transform);
                 }
@@ -64,7 +60,7 @@ public class EntityInteract : MonoBehaviour
         }
     }
 
-    public bool CheckForHiding()  // -------checks if raycast hits cabinet then opens cabinet door, maybe take parameter to x cabCheckDistance by ?
+    public bool CheckForHiding()  // -------checks if raycast hits cabinet then opens cabinet door
     {
         Vector3 origin = transform.position + Vector3.up * 0.1f;
 
@@ -76,21 +72,13 @@ public class EntityInteract : MonoBehaviour
             cabMask))  //, QueryTriggerInteraction.Ignore))
         {
             CabinetManager cab = hit.collider.GetComponentInParent<CabinetManager>();  
-        //    Debug.Log("checking for cabinets");
-        //    Debug.Log("Raycast hit: " + hit.collider.name);
-        //    Debug.Log("Hit object: " + hit.collider.gameObject.name);
 
             if (cab != null)
             {
-          //      Debug.Log("Cabinet FOUND: " + cab.name);
-
                 if (!cab._isOpen)
                 {
-                //    Debug.Log("ENTITY OPENING Cabinet");
 
                     currentCabinet = cab;
-                  //  var cabLocation = cab.transform.position; // feed this to another method ?
-                  //  StartCoroutine(EntityToggleCabinet());
                 }
                 return true;
             }
@@ -121,9 +109,7 @@ public class EntityInteract : MonoBehaviour
             // Range check
             if (distanceToCabinet > cone.detectionRange)
                 continue;
-            // return false;
 
-            // Convert the cone's local direction into world space
             Vector3 coneDirection =
                 transform.TransformDirection(cone.localDirection).normalized;
 
@@ -136,19 +122,17 @@ public class EntityInteract : MonoBehaviour
             // Angle check
             if (angle > cone.viewAngle / 2f)
             {
-              //   Debug.Log("Cabinet in range");
                  continue;
             }
 
-            // This cabinet is inside the cone.
-            // Is it closer than the previous one?
+            // This cabinet is inside the cone, is it closer than the previous one?
             if (distanceToCabinet < closestDistance)
             {
                 closestDistance = distanceToCabinet;
                 ClosestCabinet = cabinet.transform;
             }
         }
-        return ClosestCabinet !=null; // was false
+        return ClosestCabinet !=null; 
     }
 
     private void OnDrawGizmos()
@@ -166,7 +150,6 @@ public class EntityInteract : MonoBehaviour
         {
             yield return new WaitForSeconds(delay);
             CheckForDoor();
-           // CheckForHiding();
         }
     }
 
@@ -175,11 +158,6 @@ public class EntityInteract : MonoBehaviour
         ClosestCabinet = null;
         currentCabinet = null;
     }
-
-    /*  public bool HasHidingPlace()
-      {
-          return ClosestCabinet != null;
-      } */
 
     private IEnumerator EntityToggleCabinet() 
     {

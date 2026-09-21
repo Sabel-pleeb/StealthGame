@@ -5,12 +5,6 @@ using UnityEngine;
 using UnityEngine.AI;
 using UnityEngine.Rendering;
 
-/*CanSeePlayer
-PlayerInChaseRange
-HasLostPlayer
-MoveToLastKnownPosition
-ReturnToClosestPatrolPoint */
-// should i add a chase/lose Player and moveToGenerator strat
 namespace Pathfinding.BehaviourTrees  // file for executing strategies in game
 
 {
@@ -87,7 +81,6 @@ namespace Pathfinding.BehaviourTrees  // file for executing strategies in game
         {
             if (patrolPoints.Count == 0)
             {
-             //   Debug.Log("Patrol point count is 0 so fail");
                 return Nodes.Status.Failure;
             }
 
@@ -108,8 +101,6 @@ namespace Pathfinding.BehaviourTrees  // file for executing strategies in game
                     }
                 }
 
-             //   Debug.Log("idl man");
-
                 if (targetPoint == null)
                     return Nodes.Status.Failure;
 
@@ -119,18 +110,14 @@ namespace Pathfinding.BehaviourTrees  // file for executing strategies in game
 
             if (!agent.pathPending && agent.remainingDistance <= 0.2f)
             {
-             //   Debug.Log("RETURN SUCCESS");
                 return Nodes.Status.Success;
             }
-           // Debug.Log("Returning process");
             return Nodes.Status.Running;
         }
 
         public void Reset()
         {
-        //    Debug.Log("RESETTING RETURN");
            targetPoint = null;
-         //   agent.ResetPath();
         }
     }
 
@@ -147,7 +134,6 @@ namespace Pathfinding.BehaviourTrees  // file for executing strategies in game
         EntityStates state2;
         readonly Func<bool> isCaught;
 
-        //public EntityStates State => state;
 
         public ChasePlayerStrategy(Transform entity, NavMeshAgent agent, Transform player, EAnimStates animState, Func<bool> canSeePlayer, Func<bool> isCaught, EntityStates state1, EntityStates state2, float stoppingDistance = 1.5f, float chaseSpeed = 7)
         {
@@ -161,8 +147,7 @@ namespace Pathfinding.BehaviourTrees  // file for executing strategies in game
             this.state1 = state1;
             this.state2 = state2;
             this.animState = animState;
-            
-         //   state = EntityStates.sniffing;
+
         }
 
 
@@ -171,36 +156,27 @@ namespace Pathfinding.BehaviourTrees  // file for executing strategies in game
             
             if (!canSeePlayer())
             {
-              //  agent.ResetPath();
                 return Nodes.Status.Failure;
             }
 
-        //    state.SetState(EntityStates.sniffing);
             agent.SetDestination(player.position);
             agent.speed = chaseSpeed;
 
             if (isCaught())// (!agent.pathPending &&
              //   agent.remainingDistance <= 0.3f)  // change to isCaught
             {
-              //  Debug.Log("CAUGHT");
                 agent.isStopped = true;
-                //agent.updateRotation = false;
                 agent.speed = 0;
                 animState.SetState(state2);
                 return Nodes.Status.Success;
             }
-         //   Debug.Log("chasingggg");
             animState.SetState(state1);
             return Nodes.Status.Running;
         }
 
         public void Reset()
         {
-            //  if (isChasing)
-            // {
-          //  agent.ResetPath();
-         //   Debug.Log("NO LONGER CHASING");
-           // }
+
         }
 
 
@@ -228,7 +204,6 @@ namespace Pathfinding.BehaviourTrees  // file for executing strategies in game
 
         public Condition(Func<bool> predicate)  //evaluate if Func is true or false - whether met condition or not
         {
-        //    Debug.Log("CONDITION ACCESSED");
             this.predicate = predicate;
         }
 
@@ -265,28 +240,20 @@ namespace Pathfinding.BehaviourTrees  // file for executing strategies in game
         {
             
             if (patrolPoints.Count == 0) return Nodes.Status.Failure;
-            //state = EntityStates.walking;
-          //  state.SetState(EntityStates.walking);
 
             Transform target = patrolPoints[currentIndex];
             agent.speed = patrolSpeed;
 
-            // entity.LookAt(target.position.With(y:entity.position.y));  //looking at destination
-
             if (!isPathCalculated)
             {
-              //  Debug.Log($"Setting destination {patrolPoints[currentIndex].position}");
                 agent.isStopped = false;
                 agent.SetDestination(patrolPoints[currentIndex].position);
-               // state.SetState(EntityStates.walking);
 
                 isPathCalculated = true;
             }
 
              if(!agent.pathPending && agent.remainingDistance < 0.2f)  // distance check to next point, if close enough go to next patrol point index
             {
-                // stop and look around here ?
-                //  currentIndex = (currentIndex + 1) % patrolPoints.Count;
                 currentIndex++;
                 if (currentIndex >= patrolPoints.Count)
                 {
@@ -295,7 +262,6 @@ namespace Pathfinding.BehaviourTrees  // file for executing strategies in game
                 }
                 isPathCalculated = false;  //reset path bool
 
-              //  Debug.Log($"Moving to waypoint {currentIndex}");
             }
             animState.SetState(state);
             return Nodes.Status.Running;  //agent is still moving so process is running
@@ -303,8 +269,6 @@ namespace Pathfinding.BehaviourTrees  // file for executing strategies in game
 
         public void Reset()
         {
-        //    Debug.Log("Patrol Reset");
-          //  currentIndex = 0;
             isPathCalculated = false;
             agent.ResetPath();
         }
@@ -315,7 +279,6 @@ namespace Pathfinding.BehaviourTrees  // file for executing strategies in game
         readonly Transform entity;
         readonly NavMeshAgent agent;
         readonly Func<Transform> getTarget;
-       // bool isPathCalculated;
 
         public MoveToTarget(Transform entity, NavMeshAgent agent, Func<Transform> getTarget)
         {
@@ -324,41 +287,12 @@ namespace Pathfinding.BehaviourTrees  // file for executing strategies in game
             this.getTarget = getTarget;
         }
 
-        /*   public Nodes.Status Process()
-           {
-               agent.isStopped = false;
-
-               if (Vector3.Distance(entity.position, target.position) < 1f)
-               {
-                   return Nodes.Status.Success;
-               }
-
-               agent.SetDestination(target.position);
-              // entity.LookAt(target.position.With(y: entity.position.y));
-
-            /*   if (agent.pathPending)
-               {
-                   isPathCalculated = true;
-               } */
-        /*         return Nodes.Status.Running;
-             }
-             public void Reset()
-             {
-                 agent.ResetPath();
-             }
-
-             // public void Reset() => isPathCalculated = false; */
-
-
-
         public Nodes.Status Process()
         {
-           // agent.speed = 4.4f;
             Transform target = getTarget();
 
             if (target == null)
             {
-             //   Debug.LogError("MoveToTarget: TARGET IS NULL!");
                 return Nodes.Status.Failure;
             }
 
@@ -443,8 +377,6 @@ namespace Pathfinding.BehaviourTrees  // file for executing strategies in game
                 {
                     animState.SetState(state1);
 
-                  //  Debug.Log("Going to cabinet");
-
                     return Nodes.Status.Running;
                 }
 
@@ -454,7 +386,6 @@ namespace Pathfinding.BehaviourTrees  // file for executing strategies in game
                 agent.isStopped = true;
                 agent.velocity = Vector3.zero;
 
-             //   Debug.Log("Reached cabinet");
             }
 
 
@@ -484,37 +415,18 @@ namespace Pathfinding.BehaviourTrees  // file for executing strategies in game
                 }
             } 
 
-            // ------------------------------------------------
-            // 3. Open cabinet
-            // ------------------------------------------------
-
             if (!openedCabinet)
             {
-               // openedCabinet = true;
-
-             //   Debug.Log("Facing cabinet - opening");
 
                 if (interact.CheckForHiding())
                 {
                     openedCabinet = true;
                     interact.Opening();
-                //    Debug.Log("CABINET OPENED");
                     playerHiding.hideCount = 0;
                 }
                 else
                 {
 
-                    /*    if (isCaught())
-                        {
-                            Debug.Log("CAUGHT");
-
-                            animState.SetState(state2);
-
-                            // Reset();
-                            detection.playerCaught();
-                            return Nodes.Status.Success;
-                        } */
-                //    Debug.Log("no cabinet ");
                       interact.ClearCabinetTarget();
                     openedCabinet = true;
                     agent.isStopped = false;
@@ -525,38 +437,19 @@ namespace Pathfinding.BehaviourTrees  // file for executing strategies in game
 
                     return Nodes.Status.Success;
                 }
-                    // return Nodes.Status.Success;
             }
             if (isCaught())
             {
-               // ui.teleport();
-             //   Debug.Log("CAUGHT");
-               // animState.SetState(state2);
-
-            //   agent.isStopped = true;
                 agent.speed = 0;
-              //  Debug.Log("ABOUT TO SET STATE 2: " + state2);
-
                 animState.SetState(state2);
-
-             //   Debug.Log("SET STATE 2 COMPLETE");
-
                 detection.playerCaught();
-
-             //   Debug.Log("AFTER playerCaught, setting state 2 again");
-
                 animState.SetState(state2);
-
-             //   Debug.Log("Anim state == " + state2);
 
                 return Nodes.Status.Running;
             }
 
-            //return Nodes.Status.Failure;    
              if (openedCabinet)
             {
-             //   Debug.Log("CABINET EMPTY");
-
                 agent.isStopped = false;
                 reachedCabinet = false;
                 openedCabinet = false;
@@ -567,14 +460,6 @@ namespace Pathfinding.BehaviourTrees  // file for executing strategies in game
 
             return Nodes.Status.Running;
         }
-
-     /*   private void Reset()
-        {
-            reachedCabinet = false;
-            openedCabinet = false;
-
-            agent.isStopped = false;
-        } */
     }
 
     public class InvestigateStrategy : IStrategy
@@ -621,7 +506,6 @@ namespace Pathfinding.BehaviourTrees  // file for executing strategies in game
 
                 targetRotation = entity.eulerAngles.y + 90f;
 
-             //   Debug.Log("ENTITY INVESTIGATING");
             }
 
 
@@ -641,16 +525,13 @@ namespace Pathfinding.BehaviourTrees  // file for executing strategies in game
                 0f
             );
 
-
             // Finished this look
             if (timer >= investigateTime)
             {
                 agent.isStopped = false;
 
                 started = false;
-
-            //    Debug.Log("INVESTIGATION COMPLETE");
-                onInvestigationComplete?.Invoke(); // do same for generator ?
+                onInvestigationComplete?.Invoke(); 
                 return Nodes.Status.Success;
             }
 

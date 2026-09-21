@@ -18,9 +18,7 @@ public class UIManager : MonoBehaviour
     public GameObject startScreen;
 
     public GameObject Vision;
-    public GameObject Slider;
     public GameObject interact;
-    public Slider slider;
     public int progressAmount;
     public GameObject gameWinScreen;
 
@@ -40,12 +38,9 @@ public class UIManager : MonoBehaviour
         light3.gameObject.SetActive(false);
         canvas.alpha = 0.5f;
         uiElement.localScale = Vector3.one;
-        Vision.SetActive(true);
-     //   Slider.SetActive(true); 
+        Vision.SetActive(true); 
         interact.SetActive(true);
         progressAmount = 0;
-        slider.value = 0;
-        slider.maxValue = 3;
         gameWinScreen.SetActive(false);
         startScreen.SetActive(true);
     }
@@ -85,23 +80,21 @@ public class UIManager : MonoBehaviour
             EntityVision.VisionConeType.Normal:
                 fadeTween = canvas.DOFade(1f, 0.3f);
                 uiElement.localScale = Vector3.one;
-                pulseTween = uiElement.DOScale(1.3f, 0.25f).SetLoops(-1, LoopType.Yoyo).SetEase(Ease.InOutSine); // also change COLOUR of eye 
+                pulseTween = uiElement.DOScale(1.3f, 0.25f).SetLoops(-1, LoopType.Yoyo).SetEase(Ease.InOutSine); 
                 image.color = Color.red;
-              //  AudioManager.Instance.Play("Heartbeat", audioSource2);
-
                 break;
             case
             EntityVision.VisionConeType.HidingPlaces:
                 fadeTween = canvas.DOFade(1f, 0.3f);
                 uiElement.localScale = Vector3.one;
-                pulseTween = uiElement.DOScale(0.95f, 0.95f).SetLoops(-1, LoopType.Yoyo).SetEase(Ease.InOutSine); // also change COLOUR of eye 
+                pulseTween = uiElement.DOScale(0.95f, 0.95f).SetLoops(-1, LoopType.Yoyo).SetEase(Ease.InOutSine); 
                 image.color = Color.white;
                 break; 
             case
             EntityVision.VisionConeType.WideLight:
                 fadeTween = canvas.DOFade(1f, 0.3f);
                 uiElement.localScale = Vector3.one;
-                pulseTween = uiElement.DOScale(0.95f, 0.95f).SetLoops(-1, LoopType.Yoyo).SetEase(Ease.InOutSine); // also change COLOUR of eye 
+                pulseTween = uiElement.DOScale(0.95f, 0.95f).SetLoops(-1, LoopType.Yoyo).SetEase(Ease.InOutSine); 
                 image.color = Color.yellow;
                 AudioManager.Instance.Play("DetectionSound", audioSource);
                 break; 
@@ -116,11 +109,9 @@ public class UIManager : MonoBehaviour
 
     public void teleport()
     {
-     //   Debug.Log("Teleport");
         entity.SetActive(false);
         entity.transform.position = destination.position;
         entity.SetActive(true);
-        //entity.GetComponent<NavMeshAgent>().isStopped = true;
     }
 
     private void OnDestroy()
@@ -132,20 +123,10 @@ public class UIManager : MonoBehaviour
     public void WidgetsOff()
     {
         Vision.SetActive(false);
-        Slider.SetActive(false);
         interact.SetActive(false);
     }
 
-    public void SliderFill(int amount)
-    {
-        progressAmount += amount;
-        slider.value = progressAmount;
 
-        if(progressAmount >= slider.maxValue)
-        {
-        //    Debug.Log("Door open");
-        }
-    }
 
     public void gameWin()
     {
